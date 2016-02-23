@@ -35,9 +35,9 @@ class User:
 		return self.rank_str
 
 def get_user_list(file_name):
-    spamReader1 = csv.reader(open(file_name, 'r'), delimiter=' ')
+    reader = csv.reader(open(file_name, 'r'), delimiter=' ')
     user_list = []
-    for row in spamReader1:
+    for row in reader:
 
     	user_obj = User()
     	user_obj.set_name(row[0])
@@ -48,35 +48,30 @@ def get_user_list(file_name):
     user_list = sorted(user_list, cmp=lambda x,y: cmp(x.get_name().lower(), y.get_name().lower()))
     user_list = sorted(user_list, key=lambda User: User.get_balance(), reverse=True)
 
+    for cnt, item in enumerate(user_list):
+        if cnt == 0:
+            user_list[cnt].set_rank(1)
+            user_list[cnt].set_rank_str("1")
+            now_rank = 1
+        else:
+            if user_list[cnt-1].get_balance() == user_list[cnt].get_balance():
+                user_list[cnt].set_rank(now_rank)
+                user_list[cnt].set_rank_str(":::")
+            else:
+                user_list[cnt].set_rank(cnt+1)
+                user_list[cnt].set_rank_str(str(cnt+1))
+                now_rank += 1
+
     return user_list
 
 def main():
 
-    argvs = sys.argv
-
-    sorted_user_list = get_user_list(argvs[1])
-    sorted_user_list2 = get_user_list(argvs[2])
-
-    for x in [sorted_user_list, sorted_user_list2]:
-    	for y in x :
-
-    		index2 = x.index(y)
-    		if index2 == 0 :
-    			y.set_rank(1)
-    			now_rank = 1
-    			y.set_rank_str("1")
-    		else :
-    			if x[index2-1].get_balance() == y.get_balance():
-    				y.set_rank(now_rank)
-    				y.set_rank_str(":::")
-    			else:
-    				y.set_rank(index2 + 1)
-    				now_rank = index2 + 1
-    				y.set_rank_str(str(index2 + 1))
+    sorted_user_list = get_user_list(sys.argv[1])
+    sorted_user_list2 = get_user_list(sys.argv[2])
 
     rank = u""
     print u"===== 長者番付 ====="
-    print u"  * " + argvs[3] + u"年" + argvs[4] + u"月末時点のデータです。"
+    print u"  * " + sys.argv[3] + u"年" + sys.argv[4] + u"月末時点のデータです。"
     print u"  * <color red>↑</color><color blue>↓</color>は前回からの増減値です。\n"
     print u"^  順位  ^^  名前  ^  所持金[円]  ^^^"
     for y in sorted_user_list2 :
