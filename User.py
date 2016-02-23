@@ -60,7 +60,7 @@ def get_user_list(file_name):
             else:
                 user_list[cnt].set_rank(cnt+1)
                 user_list[cnt].set_rank_str(str(cnt+1))
-                now_rank += 1
+                now_rank = cnt+1
 
     return user_list
 
