@@ -22,7 +22,7 @@ def get_user_list(file_name):
     user_list = sorted(user_list, cmp=lambda x,y: cmp(x.name.lower(), y.name.lower()))
     user_list = sorted(user_list, key=lambda User: User.balance, reverse=True)
 
-    for cnt, item in enumerate(user_list):
+    for cnt in range(len(user_list)):
         if cnt == 0:
             user_list[cnt].rank = 1
             user_list[cnt].rank_str = "1"
@@ -40,8 +40,8 @@ def get_user_list(file_name):
 
 def main():
 
-    sorted_user_list = get_user_list(sys.argv[1])
-    sorted_user_list2 = get_user_list(sys.argv[2])
+    user_list_last_month = get_user_list(sys.argv[1])
+    user_list_this_month = get_user_list(sys.argv[2])
 
     rank = u""
     print u"===== 長者番付 ====="
@@ -49,11 +49,11 @@ def main():
     print u"  * <color red>↑</color><color blue>↓</color>は前回からの増減値です。\n"
     print u"^  順位  ^^  名前  ^  所持金[円]  ^^^"
 
-    for y in sorted_user_list2 :
+    for y in user_list_this_month :
 
         flag_match = False
 
-        for x in sorted_user_list:
+        for x in user_list_last_month:
 
             if x.name == y.name:
                 delta_rank = x.rank - y.rank
@@ -62,7 +62,7 @@ def main():
                 break
 
         if not flag_match:
-            delta_rank = len(sorted_user_list) + 1 - y.rank
+            delta_rank = len(user_list_last_month) + 1 - y.rank
             delta_balance = y.balance
 
         if delta_rank > 0:
@@ -80,7 +80,6 @@ def main():
             delta_balance_str = u"<color blue><fs 90%>↓</fs></color>|  <color blue><fs 90%>" + str('{:,d}'.format(int(math.fabs(delta_balance)))) + u"</fs></color>"
 
         print u"|  " + y.rank_str + u"|" + delta_rank_str + u"|" + y.name + u"|  " + str('{:,d}'.format(y.balance)) + u"|" + delta_balance_str + u"|"
-    print u""
 
 if __name__ == '__main__':
     main()
