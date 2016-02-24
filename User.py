@@ -7,17 +7,17 @@ import math
 class User:
 
     def __init__(self, name, balance):
-    	self.name = name
-    	self.balance = balance
-    	self.rank = 0
-    	self.rank_str = ""
+        self.name = name
+        self.balance = balance
+        self.rank = 0
+        self.rank_str = ""
 
 def get_user_list(file_name):
 
     reader = csv.reader(open(file_name, 'r'), delimiter=' ')
     user_list = []
     for row in reader:
-    	user_list.append(User(row[0], int(float(row[1][8:]))))
+        user_list.append(User(row[0], int(float(row[1][8:]))))
 
     user_list = sorted(user_list, cmp=lambda x,y: cmp(x.name.lower(), y.name.lower()))
     user_list = sorted(user_list, key=lambda User: User.balance, reverse=True)
@@ -53,7 +53,7 @@ def main():
 
         flag_match = False
 
-     	for x in sorted_user_list:
+        for x in sorted_user_list:
 
             if x.name == y.name:
                 delta_rank = x.rank - y.rank
@@ -66,18 +66,18 @@ def main():
             delta_balance = y.balance
 
         if delta_rank > 0:
-			delta_rank_str = u"<color red><fs 90%>↑(" + str(delta_rank) + u")</fs></color>"
+            delta_rank_str = u"<color red><fs 90%>↑(" + str(delta_rank) + u")</fs></color>"
         elif delta_rank == 0:
-			delta_rank_str = u" "
+            delta_rank_str = u" "
         else:
-			delta_rank_str = u"<color blue><fs 90%>↓(" + str(int(math.fabs(delta_rank))) + u")</fs></color>"
+            delta_rank_str = u"<color blue><fs 90%>↓(" + str(int(math.fabs(delta_rank))) + u")</fs></color>"
 
         if delta_balance > 0:
-			delta_balance_str = u"<color red><fs 90%>↑</fs></color>|  <color red><fs 90%>" + str('{:,d}'.format(delta_balance)) + u"</fs></color>"
+            delta_balance_str = u"<color red><fs 90%>↑</fs></color>|  <color red><fs 90%>" + str('{:,d}'.format(delta_balance)) + u"</fs></color>"
         elif delta_balance == 0:
-			delta_balance_str = u" "
+            delta_balance_str = u" "
         else:
-			delta_balance_str = u"<color blue><fs 90%>↓</fs></color>|  <color blue><fs 90%>" + str('{:,d}'.format(int(math.fabs(delta_balance)))) + u"</fs></color>"
+            delta_balance_str = u"<color blue><fs 90%>↓</fs></color>|  <color blue><fs 90%>" + str('{:,d}'.format(int(math.fabs(delta_balance)))) + u"</fs></color>"
 
         print u"|  " + y.rank_str + u"|" + delta_rank_str + u"|" + y.name + u"|  " + str('{:,d}'.format(y.balance)) + u"|" + delta_balance_str + u"|"
     print u""
