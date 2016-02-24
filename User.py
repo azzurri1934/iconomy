@@ -5,34 +5,12 @@ import csv
 import math
 
 class User:
-	name = ""
-	balance = 0
-	rank = 0
-	rank_str = ""
 
-	def set_name(self, name):
-		self.name = name
-
-	def set_balance(self, balance):
-		self.balance = balance
-
-	def set_rank(self, rank):
-		self.rank = rank
-
-	def set_rank_str(self, rank_str):
-		self.rank_str = rank_str
-
-	def get_name(self):
-		return self.name
-
-	def get_balance(self):
-		return self.balance
-
-	def get_rank(self):
-		return self.rank
-
-	def get_rank_str(self):
-		return self.rank_str
+    def __init__(self):
+    	name = ""
+    	balance = 0
+    	rank = 0
+    	rank_str = ""
 
 def get_user_list(file_name):
     reader = csv.reader(open(file_name, 'r'), delimiter=' ')
@@ -40,26 +18,26 @@ def get_user_list(file_name):
     for row in reader:
 
     	user_obj = User()
-    	user_obj.set_name(row[0])
-    	user_obj.set_balance(int(float(row[1][8:])))
+    	user_obj.name = (row[0])
+    	user_obj.balance = (int(float(row[1][8:])))
 
     	user_list.append(user_obj)
 
-    user_list = sorted(user_list, cmp=lambda x,y: cmp(x.get_name().lower(), y.get_name().lower()))
-    user_list = sorted(user_list, key=lambda User: User.get_balance(), reverse=True)
+    user_list = sorted(user_list, cmp=lambda x,y: cmp(x.name.lower(), y.name.lower()))
+    user_list = sorted(user_list, key=lambda User: User.balance, reverse=True)
 
     for cnt, item in enumerate(user_list):
         if cnt == 0:
-            user_list[cnt].set_rank(1)
-            user_list[cnt].set_rank_str("1")
+            user_list[cnt].rank = 1
+            user_list[cnt].rank_str = "1"
             now_rank = 1
         else:
-            if user_list[cnt-1].get_balance() == user_list[cnt].get_balance():
-                user_list[cnt].set_rank(now_rank)
-                user_list[cnt].set_rank_str(":::")
+            if user_list[cnt-1].balance == user_list[cnt].balance:
+                user_list[cnt].rank = now_rank
+                user_list[cnt].rank_str = u":::"
             else:
-                user_list[cnt].set_rank(cnt+1)
-                user_list[cnt].set_rank_str(str(cnt+1))
+                user_list[cnt].rank = cnt+1
+                user_list[cnt].rank_str = str(cnt+1)
                 now_rank = cnt+1
 
     return user_list
@@ -87,7 +65,7 @@ def main():
     			else:
     				delta_str = u"<color blue><fs 90%>↓(" + str(int(math.fabs(delta))) + u")</fs></color>"
 
-    			delta_level = y.get_balance() - x.get_balance()
+    			delta_level = y.balance - x.balance
     			if delta_level > 0:
     				delta_level_str = u"<color red><fs 90%>↑</fs></color>|  <color red><fs 90%>" + str('{:,d}'.format(delta_level)) + u"</fs></color>"
     			elif delta_level == 0:
@@ -95,7 +73,7 @@ def main():
     			else:
     				delta_level_str = u"<color blue><fs 90%>↓</fs></color>|  <color blue><fs 90%>" + str('{:,d}'.format(int(math.fabs(delta_level)))) + u"</fs></color>"
     			break
-    		if x.get_balance() > 0:
+    		if x.balance > 0:
     			cnt += 1
     	else:
     		delta = cnt + 1 - y.rank
@@ -105,10 +83,10 @@ def main():
     			delta_str = u" "
     		else:
     			delta_str = u"<color blue><fs 90%>↓(" + str(int(math.fabs(delta))) + u")</fs></color>"
-    		delta_level = y.get_balance()
+    		delta_level = y.balance
     		delta_level_str = u"<color red><fs 90%>↑</fs></color>|  <color red><fs 90%>" + str('{:,d}'.format(delta_level)) + u"</fs></color>"
 
-    	print u"|  " + y.rank_str + u"|" + delta_str + u"|" + y.name + u"|  " + str('{:,d}'.format(y.get_balance())) + u"|" + delta_level_str + u"|"
+    	print u"|  " + y.rank_str + u"|" + delta_str + u"|" + y.name + u"|  " + str('{:,d}'.format(y.balance)) + u"|" + delta_level_str + u"|"
     print u""
 
 if __name__ == '__main__':
