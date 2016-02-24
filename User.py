@@ -6,22 +6,18 @@ import math
 
 class User:
 
-    def __init__(self):
-    	name = ""
-    	balance = 0
-    	rank = 0
-    	rank_str = ""
+    def __init__(self, name, balance):
+    	self.name = name
+    	self.balance = balance
+    	self.rank = 0
+    	self.rank_str = ""
 
 def get_user_list(file_name):
+
     reader = csv.reader(open(file_name, 'r'), delimiter=' ')
     user_list = []
     for row in reader:
-
-    	user_obj = User()
-    	user_obj.name = (row[0])
-    	user_obj.balance = (int(float(row[1][8:])))
-
-    	user_list.append(user_obj)
+    	user_list.append(User(row[0], int(float(row[1][8:]))))
 
     user_list = sorted(user_list, cmp=lambda x,y: cmp(x.name.lower(), y.name.lower()))
     user_list = sorted(user_list, key=lambda User: User.balance, reverse=True)
@@ -36,9 +32,9 @@ def get_user_list(file_name):
                 user_list[cnt].rank = now_rank
                 user_list[cnt].rank_str = u":::"
             else:
-                user_list[cnt].rank = cnt+1
+                user_list[cnt].rank = cnt + 1
                 user_list[cnt].rank_str = str(cnt+1)
-                now_rank = cnt+1
+                now_rank = cnt + 1
 
     return user_list
 
@@ -52,41 +48,38 @@ def main():
     print u"  * " + sys.argv[3] + u"年" + sys.argv[4] + u"月末時点のデータです。"
     print u"  * <color red>↑</color><color blue>↓</color>は前回からの増減値です。\n"
     print u"^  順位  ^^  名前  ^  所持金[円]  ^^^"
+
     for y in sorted_user_list2 :
 
-    	cnt = 0
-    	for x in sorted_user_list:
-    		if x.name == y.name:
-    			delta = x.rank - y.rank
-    			if delta > 0:
-    				delta_str = u"<color red><fs 90%>↑(" + str(delta) + u")</fs></color>"
-    			elif delta == 0:
-    				delta_str = u" "
-    			else:
-    				delta_str = u"<color blue><fs 90%>↓(" + str(int(math.fabs(delta))) + u")</fs></color>"
+        flag_match = False
 
-    			delta_level = y.balance - x.balance
-    			if delta_level > 0:
-    				delta_level_str = u"<color red><fs 90%>↑</fs></color>|  <color red><fs 90%>" + str('{:,d}'.format(delta_level)) + u"</fs></color>"
-    			elif delta_level == 0:
-    				delta_level_str = u" "
-    			else:
-    				delta_level_str = u"<color blue><fs 90%>↓</fs></color>|  <color blue><fs 90%>" + str('{:,d}'.format(int(math.fabs(delta_level)))) + u"</fs></color>"
-    			break
-    		if x.balance > 0:
-    			cnt += 1
-    	else:
-    		delta = cnt + 1 - y.rank
-    		if delta > 0:
-    			delta_str = u"<color red><fs 90%>↑(" + str(delta) + u")</fs></color>"
-    		elif delta == 0:
-    			delta_str = u" "
-    		else:
-    			delta_str = u"<color blue><fs 90%>↓(" + str(int(math.fabs(delta))) + u")</fs></color>"
-    		delta_level = y.balance
-    		delta_level_str = u"<color red><fs 90%>↑</fs></color>|  <color red><fs 90%>" + str('{:,d}'.format(delta_level)) + u"</fs></color>"
+     	for x in sorted_user_list:
 
-    	print u"|  " + y.rank_str + u"|" + delta_str + u"|" + y.name + u"|  " + str('{:,d}'.format(y.balance)) + u"|" + delta_level_str + u"|"
+            if x.name == y.name:
+                delta_rank = x.rank - y.rank
+                delta_balance = y.balance - x.balance
+                flag_match = True
+                break
+
+        if not flag_match:
+            delta_rank = len(sorted_user_list) + 1 - y.rank
+            delta_balance = y.balance
+
+        if delta_rank > 0:
+			delta_rank_str = u"<color red><fs 90%>↑(" + str(delta_rank) + u")</fs></color>"
+        elif delta_rank == 0:
+			delta_rank_str = u" "
+        else:
+			delta_rank_str = u"<color blue><fs 90%>↓(" + str(int(math.fabs(delta_rank))) + u")</fs></color>"
+
+        if delta_balance > 0:
+			delta_balance_str = u"<color red><fs 90%>↑</fs></color>|  <color red><fs 90%>" + str('{:,d}'.format(delta_balance)) + u"</fs></color>"
+        elif delta_balance == 0:
+			delta_balance_str = u" "
+        else:
+			delta_balance_str = u"<color blue><fs 90%>↓</fs></color>|  <color blue><fs 90%>" + str('{:,d}'.format(int(math.fabs(delta_balance)))) + u"</fs></color>"
+
+        print u"|  " + y.rank_str + u"|" + delta_rank_str + u"|" + y.name + u"|  " + str('{:,d}'.format(y.balance)) + u"|" + delta_balance_str + u"|"
     print u""
 
 if __name__ == '__main__':
