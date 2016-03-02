@@ -4,6 +4,7 @@ import sys
 import csv
 import math
 
+
 class User:
 
     def __init__(self, name, balance):
